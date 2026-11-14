@@ -1,0 +1,81 @@
+DESIGN DOCUMENT
+Bank Account Management System - CSE114 Project 12
+Team: Alif, Jumma, Nadia, Hasan, Izaz
+
+
+1. TRANSACTION-LOGGING STRUCTURE
+--------------------------------
+
+Each transaction is one node of a linked list:
+
+    struct Transaction {
+        char type[30];               "Deposit", "Withdraw", "Sent-to-1002"
+        double amount;
+        double balance_after;        balance after this transaction
+        struct Transaction *next;    next node, or NULL at the end
+    };
+
+Every account has its own list. logs[i] points to the first
+transaction of accounts[i]:
+
+    logs[0] -> [Opening 500] -> [Deposit 250] -> [Sent-to-1002 200] -> NULL
+    logs[1] -> [Opening 100] -> [Received-from-1001 200] -> NULL
+
+Adding a transaction (add_transaction):
+  1. Make a new node with malloc and fill in its data.
+  2. Set next = NULL, because it will be the last node.
+  3. If the list is empty, logs[i] points to the new node.
+     Otherwise, walk to the last node and link the new node after it.
+
+New nodes always go at the end, so the statement prints in time order.
+
+Why a linked list?
+  We don't know how many transactions an account will have. A linked
+  list grows one node at a time, so it never runs out of space and
+  doesn't waste memory.
+
+A transfer adds two transactions: "Sent-to" in the sender's list
+and "Received-from" in the receiver's list.
+
+Saving: the list is written to transactions.txt, one line per
+transaction. Pointers are not saved, because memory addresses change
+every time the program runs. When the program starts, load_from_file()
+reads each line and calls add_transaction() to rebuild the lists.
+
+Before the program exits, free_logs() frees every node.
+
+
+2. PIN-HASHING APPROACH
+-----------------------
+
+The real PIN is never saved. Only a hash of it is stored in pin_hash.
+
+    hash = account number
+    for each digit of the PIN:
+        hash = hash * 31 + digit
+    pin_hash = hash written as text
+
+Opening an account: the PIN is hashed and the hash is saved.
+Logging in: the typed PIN is hashed the same way and compared with
+the saved hash. If they match, the PIN is correct.
+
+The account number is mixed in, so two people with the same PIN get
+different hashes. After 3 wrong tries the user goes back to the main
+menu.
+
+Limitation: this is a basic hash, as the brief asks. A 4-digit PIN has
+only 10,000 possibilities, so it stops someone from simply reading the
+PIN in the file, but real banks use much stronger hashing.
+
+
+3. VALIDATION
+-------------
+
+- Amounts must be more than 0.
+- Withdraw or transfer more than the balance is refused, so the
+  balance can never go negative (no overdraft).
+- Cannot transfer to your own account or to an account that doesn't exist.
+- PIN must be exactly 4 digits.
+- Name is one word (scanf("%s") stops at a space).
+- Maximum 150 accounts.
+- The account menu is only shown after the correct PIN (PIN-gated).

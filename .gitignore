@@ -1,0 +1,10 @@
+# Compiled program
+bank
+bank.exe
+*.o
+
+# Data created when the program runs
+accounts.txt
+transactions.txt
+
+.DS_Store
