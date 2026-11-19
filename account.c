@@ -40,8 +40,8 @@ void open_account()
     i = account_count;
     accounts[i].acc_no = 1001 + i;
 
-    printf("Enter name (one word): ");
-    scanf("%49s", accounts[i].holder_name);
+    printf("Enter full name: ");
+    scanf(" %49[^\n]", accounts[i].holder_name);   /* reads the whole line, spaces too */
 
     printf("Choose a 4-digit PIN: ");
     scanf("%9s", pin);

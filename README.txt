@@ -17,7 +17,7 @@ DESIGN.txt      Design document (transaction log and PIN hashing)
 FEATURES
 --------
 - Open an account (numbers start at 1001, up to 150 accounts)
-- Name must be one word, e.g. Alice or Alice_Khan
+- Full names with spaces are allowed, e.g. Rawdha Hasan
 - Log in with account number and 4-digit PIN (3 tries)
 - PIN is saved as a hash, never as the real PIN
 - Deposit, withdraw, and transfer money

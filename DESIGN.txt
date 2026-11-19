@@ -76,6 +76,8 @@ PIN in the file, but real banks use much stronger hashing.
   balance can never go negative (no overdraft).
 - Cannot transfer to your own account or to an account that doesn't exist.
 - PIN must be exactly 4 digits.
-- Name is one word (scanf("%s") stops at a space).
+- Full names with spaces are allowed. scanf(" %49[^\n]") reads the
+  whole line until Enter. In accounts.txt the name is saved last on
+  the line, so the spaces do not confuse fscanf when loading.
 - Maximum 150 accounts.
 - The account menu is only shown after the correct PIN (PIN-gated).

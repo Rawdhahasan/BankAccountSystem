@@ -7,15 +7,16 @@ void save_to_file()
     struct Transaction *t;
     int i;
 
-    /* accounts.txt: one account per line */
+    /* accounts.txt: one account per line.
+       The name is written last, because it can have spaces. */
     fp = fopen("accounts.txt", "w");
     if (fp == NULL) {
         printf("Could not save accounts.\n");
         return;
     }
     for (i = 0; i < account_count; i++) {
-        fprintf(fp, "%u %s %.2f %s\n", accounts[i].acc_no, accounts[i].holder_name,
-                accounts[i].balance, accounts[i].pin_hash);
+        fprintf(fp, "%u %.2f %s %s\n", accounts[i].acc_no, accounts[i].balance,
+                accounts[i].pin_hash, accounts[i].holder_name);
     }
     fclose(fp);
 
@@ -48,11 +49,11 @@ void load_from_file()
     fp = fopen("accounts.txt", "r");
     if (fp != NULL) {
         while (account_count < MAX_ACCOUNTS &&
-               fscanf(fp, "%u %49s %lf %64s",
+               fscanf(fp, "%u %lf %64s %49[^\n]",
                       &accounts[account_count].acc_no,
-                      accounts[account_count].holder_name,
                       &accounts[account_count].balance,
-                      accounts[account_count].pin_hash) == 4) {
+                      accounts[account_count].pin_hash,
+                      accounts[account_count].holder_name) == 4) {
             logs[account_count] = NULL;
             account_count++;
         }
